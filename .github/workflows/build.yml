@@ -1,4 +1,8 @@
-name: Build ProxLock
+- name: Force export of schemes
+  run: |
+    defaults write com.apple.dt.Xcode IDECustomDerivedDataLocation -string "$(pwd)/build"
+    xcodebuild -project ProxLock.xcodeproj -list
+    name: Build ProxLock
 on: [workflow_dispatch]
 jobs:
   build:
