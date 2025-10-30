@@ -1,17 +1,29 @@
-- name: Force export of schemes
-  run: |
-    defaults write com.apple.dt.Xcode IDECustomDerivedDataLocation -string "$(pwd)/build"
-    xcodebuild -project ProxLock.xcodeproj -list
-    name: Build ProxLock
-on: [workflow_dispatch]
+name: Build ProxLock
+
+on:
+  workflow_dispatch:
+
 jobs:
   build:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Build .app
+
+      - name: Show Xcode project contents / schemes
         run: |
-          xcodebuild -project ProxLock.xcodeproj -scheme ProxLock -configuration Release -derivedDataPath build
+          ls -la
+          xcodebuild -list -project ProxLock.xcodeproj || true
+
+      - name: Build app without code signing
+        run: |
+          xcodebuild -project ProxLock.xcodeproj \
+            -scheme ProxLock \
+            -configuration Release \
+            -derivedDataPath build \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
