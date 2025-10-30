@@ -9,16 +9,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Show Xcode project contents / schemes
-        run: |
-          ls -la
-          xcodebuild -list -project ProxLock.xcodeproj || true
+      - name: Clean build
+        run: rm -rf build
 
-      - name: Build app without code signing
+      - name: Build app in Debug without code signing
         run: |
           xcodebuild -project ProxLock.xcodeproj \
             -scheme ProxLock \
-            -configuration Release \
+            -configuration Debug \
             -derivedDataPath build \
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
@@ -28,4 +26,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ProxLock.app
-          path: build/Build/Products/Release/ProxLock.app
+          path: build/Build/Products/Debug/ProxLock.app
